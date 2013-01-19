@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 
+		这些是极其重要的调整，它们会修改MyBatis在运行时的行为方式
+	-->
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+	
+<!-- 	<typeAliases> -->
+<!-- 		<typeAlias alias="StockVO" type="com.citipf.liyunpeng.valueObject.StockVO"/> -->
+<!-- 		<typeAlias alias="UserVO" type="com.citipf.liyunpeng.valueObject.UserVO"/> -->
+<!-- 		<typeAlias alias="UInveVO" type="com.citipf.liyunpeng.valueObject.UInveVO"/> -->
+<!-- 		<typeAlias alias="UserAddVO" type="com.citipf.liyunpeng.valueObject.UserAddVO"/> -->
+<!-- 		<typeAlias alias="PurcProgVO" type="com.citipf.liyunpeng.valueObject.PurcProgVO"/> -->
+<!-- 	</typeAliases> -->
+<!-- 	<mappers> -->
+<!-- 		<mapper resource="com/sanrenxing/dao/mybatis/UserAttentionMapper.xml"/> -->
+<!-- 		<mapper resource="com/citipf/liyunpeng/valueObject/UserVO.xml"/> -->
+<!-- 		<mapper resource="com/citipf/liyunpeng/valueObject/UInveVO.xml"/> -->
+<!-- 		<mapper resource="com/citipf/liyunpeng/valueObject/UserAddVO.xml"/> -->
+<!-- 		<mapper resource="com/citipf/liyunpeng/valueObject/PurcProgVO.xml"/> -->
+<!-- 	</mappers> -->
+</configuration>

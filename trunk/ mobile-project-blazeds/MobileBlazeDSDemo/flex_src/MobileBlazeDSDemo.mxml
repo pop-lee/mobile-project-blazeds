@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
+			   initialize="application1_initializeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.logging.Log;
+			import mx.logging.LogEventLevel;
+			import mx.logging.targets.TraceTarget;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			protected function ro_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				trace("ro_result");
+			}
+			
+			protected function ro_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				trace(event.fault.faultDetail);
+			}
+			
+			protected function application1_initializeHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				//日志输出
+				var traceTarget:TraceTarget = new TraceTarget();
+				traceTarget.filters = []; //这样写过滤器，就是输出全部类了
+				traceTarget.includeDate = true; //输出信息是否包含日期
+				traceTarget.includeTime = true; //输出信息是否包含时间
+				traceTarget.includeLevel = true; //输出信息是否包含等级
+				traceTarget.includeCategory = true; //输出信息是否包含class名
+				traceTarget.level = LogEventLevel.ALL; //设定输出的等级
+				Log.addTarget(traceTarget);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RemoteObject id="ro" destination="testa" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"
+						endpoint="http://localhost:8080/MobileBlazeDSDemo/messagebroker/amf"/>
+	</fx:Declarations>
+	
+	<s:Button click="{ro.queryPrice()}" />
+</s:Application>
