@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	     http://www.springframework.org/schema/aop 
+	     http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	     http://www.springframework.org/schema/tx
+     	 http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+         
+	<!-- Ref Properties file -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:mainConfig.properties</value>
+			</list>
+		</property>
+	</bean>
+ 
+	<!-- DataSource Config -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+		<property name="driverClass"><value>${jdbc.driverClass}</value></property>
+		<property name="jdbcUrl"><value>${jdbc.url}</value></property>
+		<property name="user"><value>${jdbc.user}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+		<property name="initialPoolSize"><value>${jdbc.initialPoolSize}</value></property>
+		<property name="minPoolSize"><value>${jdbc.minPoolSize}</value></property>
+		<property name="maxPoolSize"><value>${jdbc.maxPoolSize}</value></property>
+	</bean>
+	<!-- 
+	 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+		<property name="driverClassName">
+            <value>${jdbc.driverClass}</value>
+        </property>
+        <property name="url">
+            <value>${jdbc.url}</value>
+        </property>
+        <property name="username">
+            <value>${jdbc.user}</value>
+        </property>
+        <property name="password">
+            <value>${jdbc.password}</value>
+        </property>
+	 </bean>
+	 -->
+
+	
+	<!-- .Transaction Manager Config -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource"> 
+			<ref local="dataSource"/> 
+		</property> 
+	</bean> 
+	<!-- TransactionProxy Config -->
+	<bean id="baseTransactionProxy" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- ibatis 2 sqlMapClient Config -->
+	<!-- 
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>/com/citipf/liyunpeng/ibatisConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+	</bean>
+	 -->
+	<!-- iBatis 3 SqlSessionFactory -->
+	<bean id="sqlSessionFactory" 
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatisConfig.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+<!-- 		<property name="mapperLocations" value="classpath*:com/sanrenxing/vos/*Mapper.xml" /> -->
+	</bean>
+	
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	
+	
+	<!-- Dao Config -->
+<!-- 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> -->
+<!-- 		<property name="basePackage" value="com.sanrenxing.dao.mybatis" /> -->
+<!-- 	</bean> -->
+
+	<bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" abstract="true" lazy-init="true">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="userAttentionDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.UserAttentionMapper"></property>
+	</bean>
+	<bean id="userDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.UserMapper"></property>
+	</bean>
+</beans>

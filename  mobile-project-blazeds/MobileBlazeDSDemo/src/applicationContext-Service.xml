@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		 http://www.springframework.org/schema/aop 
+		 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		 http://www.springframework.org/schema/tx
+	 	 http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		 http://www.springframework.org/schema/context
+		 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Service -->
+	
+	<bean id="baseService" class="com.sanrenxing.services.BaseService">
+		<property name="userAttentionDao" ref="userAttentionDao" />
+		<property name="userDao" ref="userDao" />
+	</bean>
+	
+	<bean id="queryPriceService" class="com.sanrenxing.services.QueryPriceService" parent="baseService" />
+	<bean id="pushNotificationService" class="com.sanrenxing.services.PushNotificationService" parent="baseService" />
+	<bean id="appService" class="com.sanrenxing.services.AppService" parent="baseService"/>
+	
+	
+	
+	<!--定义定时执行testQuarz 这个bean中的sayHello()方法-->  
+	<bean id="queryPriceQuarz"	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+		<property name="targetObject">
+			<ref bean="queryPriceService" />
+		</property>
+		<property name="targetMethod">
+			<value>queryPrice</value>
+		</property>
+	</bean>
+	
+	<!--触发器的bean的设置，在这里我们设置了我们要触发的jobDetail是哪个。
+	这里我们定义了要触发的jobDetail是queryPriceQuarz，即触发器去触发哪个bean..
+	并且我们还定义了触发的时间:每天 每小时的0分和30分执行-->  
+	<bean id="timerQueryPriceTrigger"  
+		class="org.springframework.scheduling.quartz.CronTriggerBean">  
+		<property name="jobDetail">  
+			<ref bean="queryPriceQuarz" />  
+		</property>  
+		<property name="cronExpression">  
+			<!-- 关键在配置此表达式 -->  
+			<value>0 0/15 * * * ?</value>  
+		</property>  
+	</bean>
+	
+	<!--管理触发器的总设置,管理我们的触发器列表,可以在bean的list中放置多个触发器。   
+	-->  
+	<bean autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">  
+			<list>
+				<ref local="timerQueryPriceTrigger" />  
+			</list>
+		</property>
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanrenxing.dao.mybatis.UserAttentionMapper">
+	<resultMap id="resultMap_userAttention" type="com.sanrenxing.vos.UserAttention" >
+		<result property="attentionId"   column="attention_id"  javaType="int"/>
+		<result property="userId"  column="user_id"  javaType="int"/>
+		<result property="productId"  column="product_id"  javaType="int"/>
+		<result property="currentLowestPrice"  column="current_lowest_price"  javaType="int"/>
+		<result property="attentionPrice"  column="attention_price"  javaType="int"/>
+	</resultMap>
+	
+	<select id="selectListUserAttention" resultType="list" resultMap="resultMap_userAttention">
+		select distinct
+			product_id
+		from 
+			User_Attention;
+	</select>
+</mapper>
