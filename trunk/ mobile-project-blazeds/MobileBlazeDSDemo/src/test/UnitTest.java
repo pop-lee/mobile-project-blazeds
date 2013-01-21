@@ -1,32 +1,71 @@
 package test;
-
 import java.util.List;
 
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.sanrenxing.dao.IUserAttentionDao;
-import com.sanrenxing.dao.mybatis.UserAttentionMapper;
+import com.sanrenxing.services.PushNotificationService;
 import com.sanrenxing.vos.UserAttention;
-
-import junit.framework.TestCase;
-
-public class UnitTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)//specify the test container
+@ContextConfiguration(locations = { "/applicationContext-Dao.xml" ,"/applicationContext-Service.xml"})
+@TestExecutionListeners( { DependencyInjectionTestExecutionListener.class,
+DirtiesContextTestExecutionListener.class,
+TransactionalTestExecutionListener.class })//register listeners
+public class UnitTest {
+	@Autowired
+	private PushNotificationService pushNotificationService;
+	@Autowired
+	private IUserAttentionDao<UserAttention> userAttentionDao;
 	
-	private ApplicationContext context = new ClassPathXmlApplicationContext(
-		"applicationContext*.xml");
-	private IUserAttentionDao<UserAttention> dao = context.getBean(UserAttentionMapper.class);
-	
-	public static void main(String[] args) {
-		UnitTest ut = new UnitTest();
-		ut.test();
-	}
-
 	@Test
-	public void test() {
-		List<UserAttention> list = dao.selectListUserAttention();
+	public void pushNotification() {
+		pushNotificationService.pushNotification();
+	}
+	
+	@Test
+	public void selectListUserAttention() {
+		List<UserAttention> list = userAttentionDao.selectListUserAttention();
 		System.out.println(list.size());
 	}
+	
+//	@Autowired
+//	private IUserAttentionDao<UserAttention> userAttentionDao;
+//	@Autowired
+//	private IUserDao<User> userDao;
+	
+//	@BeforeClass
+//	public static void beforeClass() {
+//		System.out.println("@BeforeClass");
+//	}
+//	@Before
+//	public void before() {
+//		System.out.println("@Before");
+//	}
+//	// e.g @Test(timeout = milliseconds, expected= Exception class)
+//	@Test(timeout = 1)
+//	public void testGetTradableCcy() {
+//		System.out.println("OK"); 
+//	}
+//	@Ignore
+//	@Test
+//	public void testIgnore() {
+//		System.out.println("@Ignore");
+//	}
+//	@After
+//	public void after() {
+//		System.out.println("@After"); 
+//	}
+//	@AfterClass
+//	public static void afterClass() {
+//		System.out.println("@AfterClass");
+//	}
 	
 }
