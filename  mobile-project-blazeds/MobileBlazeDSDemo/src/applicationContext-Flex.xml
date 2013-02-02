@@ -16,4 +16,5 @@
 	<flex:message-broker />
 	<flex:remoting-destination destination-id="testa" ref="queryPriceService" />
 	<flex:remoting-destination destination-id="appService" ref="appService" />
+	<flex:remoting-destination destination-id="backyardService" ref="backyardService" />
 </beans>
