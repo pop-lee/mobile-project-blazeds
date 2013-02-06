@@ -1,5 +1,9 @@
 package com.sanrenxing.dao;
 
+import java.util.List;
+
 public interface IBackyardUserDao<T> {
-	public void insertUser(T user);
+	public void insertBackyardUser(T user);
+	
+	public List<T> selectUserByName(String userName);
 }

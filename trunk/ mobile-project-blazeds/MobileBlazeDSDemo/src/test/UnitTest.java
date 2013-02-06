@@ -11,8 +11,10 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import com.sanrenxing.dao.IBackyardUserDao;
 import com.sanrenxing.dao.IUserAttentionDao;
 import com.sanrenxing.services.PushNotificationService;
+import com.sanrenxing.vos.BackyardUser;
 import com.sanrenxing.vos.UserAttention;
 @RunWith(SpringJUnit4ClassRunner.class)//specify the test container
 @ContextConfiguration(locations = { "/applicationContext-Dao.xml" ,"/applicationContext-Service.xml"})
@@ -24,6 +26,8 @@ public class UnitTest {
 	private PushNotificationService pushNotificationService;
 	@Autowired
 	private IUserAttentionDao<UserAttention> userAttentionDao;
+	@Autowired
+	private IBackyardUserDao<BackyardUser> backyardUserDao;
 	
 	@Test
 	public void pushNotification() {
@@ -33,6 +37,12 @@ public class UnitTest {
 	@Test
 	public void selectListUserAttention() {
 		List<UserAttention> list = userAttentionDao.selectListUserAttention();
+		System.out.println(list.size());
+	}
+	
+	@Test
+	public void selectBackyardUser() {
+		List<BackyardUser> list = backyardUserDao.selectUserByName("aa");
 		System.out.println(list.size());
 	}
 	

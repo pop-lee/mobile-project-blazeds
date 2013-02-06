@@ -111,4 +111,7 @@
 	<bean id="userDao" parent="baseMapper">
 		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.UserMapper"></property>
 	</bean>
+	<bean id="backyardUserDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.BackyardUserMapper"></property>
+	</bean>
 </beans>
