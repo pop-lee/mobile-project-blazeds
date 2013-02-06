@@ -2,7 +2,6 @@ package com.sanrenxing.vos;
 
 public class BackyardUser {
 	private int userId;
-	private String userName;
 	private String userPass;
 	private String userEmail;
 	
@@ -11,12 +10,6 @@ public class BackyardUser {
 	}
 	public void setUserId(int userId) {
 		this.userId = userId;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 	public String getUserPass() {
 		return userPass;

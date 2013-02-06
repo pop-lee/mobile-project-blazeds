@@ -5,22 +5,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.sanrenxing.dao.mybatis.BackyardUserMapper">
 	<resultMap id="resultMap_backyard_user" type="com.sanrenxing.vos.BackyardUser" >
 		<result property="userId"   column="user_id"  javaType="Integer"/>
-		<result property="userName"   column="user_name"  javaType="String"/>
-		<result property="userPass"   column="user_pass"  javaType="String"/>
 		<result property="userEmail"   column="user_email"  javaType="String"/>
+		<result property="userPass"   column="user_pass"  javaType="String"/>
 	</resultMap>
 	
 	<insert id="insertBackyardUser" parameterType="com.sanrenxing.vos.BackyardUser">
 	INSERT INTO `srx_tb`.`backyard_user`
-	(`user_name`,
-	`user_pass`,
-	`user_email`)
+	(`user_email`,
+	`user_pass`)
 	VALUES
 	(
-	#{userName},
 	#{userPass},
 	#{userEmail}
 	);
 	</insert>
+	
+	<select id="selectUserByName" resultType="list" resultMap="resultMap_backyard_user" parameterType="String">
+	SELECT
+		`backyard_user`.`user_email`
+	FROM `srx_tb`.`backyard_user`
+	WHERE
+		`backyard_user`.`user_email` = #{userEmail};
+	</select>
 	
 </mapper>

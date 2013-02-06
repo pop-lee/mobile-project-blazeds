@@ -8,7 +8,7 @@ import com.sanrenxing.vos.BackyardUser;
 
 @Service
 public class BackyardService extends BaseService {
-
+	
 	public ResultObject insertUser(BackyardUser user)
 	{
 		ResultObject ro = new ResultObject();
@@ -17,6 +17,22 @@ public class BackyardService extends BaseService {
 	}
 	
 	public ResultObject selectPushProductById(String productId) {
+		
+		ResultObject ro = new ResultObject();
+		ro.setResultData(ResultCodeEnum.SUCCESS_CODE);
+		return ro;
+	}
+	
+	public ResultObject checkUser(String userEmail) {
+		this.getBackyardUserDao().selectUserByName(userEmail);
+		
+		ResultObject ro = new ResultObject();
+		ro.setResultData(ResultCodeEnum.SUCCESS_CODE);
+		return ro;
+	}
+	
+	public ResultObject regUser(BackyardUser user) {
+		this.getBackyardUserDao().insertBackyardUser(user);
 		
 		ResultObject ro = new ResultObject();
 		ro.setResultData(ResultCodeEnum.SUCCESS_CODE);

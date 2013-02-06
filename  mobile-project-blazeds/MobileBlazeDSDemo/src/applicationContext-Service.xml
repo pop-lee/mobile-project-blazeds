@@ -18,11 +18,13 @@
 	<bean id="baseService" class="com.sanrenxing.services.BaseService">
 		<property name="userAttentionDao" ref="userAttentionDao" />
 		<property name="userDao" ref="userDao" />
+		<property name="backyardUserDao" ref="backyardUserDao" />
 	</bean>
 	
 	<bean id="queryPriceService" class="com.sanrenxing.services.QueryPriceService" parent="baseService" />
 	<bean id="pushNotificationService" class="com.sanrenxing.services.PushNotificationService" parent="baseService" />
 	<bean id="appService" class="com.sanrenxing.services.AppService" parent="baseService"/>
+	<bean id="backyardService" class="com.sanrenxing.services.BackyardService" parent="baseService"/>
 	
 	
 	
