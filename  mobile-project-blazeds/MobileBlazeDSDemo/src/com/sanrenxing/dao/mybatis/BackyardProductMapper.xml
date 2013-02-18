@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanrenxing.dao.mybatis.BackyardProductMapper">
+	<resultMap id="resultMap_backyard_product" type="com.sanrenxing.vos.BackyardProduct" >
+		<result property="productId"   column="product_id"  javaType="String"/>
+		<result property="productName"   column="product_name"  javaType="String"/>
+		<result property="productOriginalPrice"   column="product_original_price"  javaType="String"/>
+		<result property="shelvesDate"   column="shelves_date"  javaType="Date"/>
+		<result property="pushCount"   column="push_count"  javaType="Integer"/>
+	</resultMap>
+	
+	<parameterMap type="map" id="pageSelectParam"> 
+		<parameter property="column" javaType="int" jdbcType="INTEGER" /> 
+		<parameter property="page" javaType="int" jdbcType="INTEGER"/> 
+	</parameterMap>
+	
+	<select id="selectProductByPage" resultType="list" resultMap="resultMap_backyard_product"
+			parameterMap="pageSelectParam">
+		SELECT 
+		`backyard_push_product`.`product_id`,
+		`backyard_push_product`.`product_name`,
+		`backyard_push_product`.`product_original_price`,
+		`backyard_push_product`.`shelves_date`,
+		`backyard_push_product`.`push_count`
+		FROM `srx_tb`.`backyard_push_product`
+		LIMIT #{column},#{count};
+	</select>
+	
+	<select id="selectAllProduct" resultType="list" resultMap="resultMap_backyard_product">
+	SELECT
+	`backyard_push_product`.`product_id`,
+	`backyard_push_product`.`product_name`,
+	`backyard_push_product`.`product_original_price`,
+	`backyard_push_product`.`shelves_date`
+	`backyard_push_product`.`push_count`
+	FROM `srx_tb`.`backyard_push_product`;
+	</select>
+	
+	<select id="selectProductById" resultType="list" resultMap="resultMap_backyard_product" parameterType="String">
+	SELECT
+	`backyard_push_product`.`product_id`,
+	`backyard_push_product`.`product_name`,
+	`backyard_push_product`.`product_original_price`,
+	`backyard_push_product`.`shelves_date`
+	`backyard_push_product`.`push_count`
+	FROM `srx_tb`.`backyard_push_product` 
+	WHERE
+	`backyard_push_product`.`product_id` = #{productId};
+	</select>
+	
+	<insert id="insertBackyardProduct" parameterType="com.sanrenxing.vos.BackyardProduct">
+	INSERT INTO `srx_tb`.`backyard_push_product`
+	(`product_id`,
+	`product_name`,
+	`product_original_price`,
+	`shelves_date`)
+	VALUES
+	(
+	#{productId},
+	#{productName},
+	#{productOriginalPrice},
+	#{shelvesDate}
+	);
+	</insert>
+	
+	<update id="updateBackyardProduct" parameterType="com.sanrenxing.vos.BackyardProduct" >
+	UPDATE `srx_tb`.`backyard_push_product`
+	SET
+	`product_name` = #{productName},
+	`product_original_price` = #{productOriginalPrice},
+	`shelves_date` = #{shelvesDate},
+	`push_count` = #{pushCount}
+	WHERE 
+	`backyard_push_product`.`product_id` = #{productId};
+	</update>
+	
+	<update id="updatePushCountById" parameterType="com.sanrenxing.vos.BackyardProduct" >
+	UPDATE `srx_tb`.`backyard_push_product`
+	SET
+	`push_count` = #{pushCount}
+	WHERE 
+	`backyard_push_product`.`product_id` = #{productId};
+	</update>
+	
+</mapper>

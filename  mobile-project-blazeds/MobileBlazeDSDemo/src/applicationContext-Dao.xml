@@ -114,4 +114,11 @@
 	<bean id="backyardUserDao" parent="baseMapper">
 		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.BackyardUserMapper"></property>
 	</bean>
+	<bean id="backyardProductDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.BackyardProductMapper"></property>
+	</bean>
+	<bean id="backyardProductDetailDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.BackyardProductDetailMapper"></property>
+	</bean>
+	
 </beans>

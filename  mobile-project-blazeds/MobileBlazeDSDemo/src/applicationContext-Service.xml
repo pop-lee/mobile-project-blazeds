@@ -19,6 +19,8 @@
 		<property name="userAttentionDao" ref="userAttentionDao" />
 		<property name="userDao" ref="userDao" />
 		<property name="backyardUserDao" ref="backyardUserDao" />
+		<property name="backyardProductDao" ref="backyardProductDao" />
+		<property name="backyardProductDetailDao" ref="backyardProductDetailDao" />
 	</bean>
 	
 	<bean id="queryPriceService" class="com.sanrenxing.services.QueryPriceService" parent="baseService" />
