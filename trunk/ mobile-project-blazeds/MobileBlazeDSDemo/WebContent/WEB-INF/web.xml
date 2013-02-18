@@ -50,6 +50,17 @@
 		<servlet-name>spring</servlet-name>
 		<url-pattern>/messagebroker/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Upload Image Servlet -->
+	<servlet>
+		<servlet-name>ImageUpload</servlet-name>
+		<servlet-class>com.sanrenxing.servlets.UploadFileServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>ImageUpload</servlet-name>
+		<url-pattern>/imageUpload</url-pattern>
+	</servlet-mapping>
 
 	
 

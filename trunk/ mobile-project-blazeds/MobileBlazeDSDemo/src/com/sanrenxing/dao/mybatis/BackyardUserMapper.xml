@@ -10,13 +10,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<insert id="insertBackyardUser" parameterType="com.sanrenxing.vos.BackyardUser">
+	<selectKey resultType="Integer" order="AFTER" keyProperty="user_id">
+	SELECT LAST_INSERT_ID()
+	</selectKey>
 	INSERT INTO `srx_tb`.`backyard_user`
 	(`user_email`,
 	`user_pass`)
 	VALUES
 	(
-	#{userPass},
-	#{userEmail}
+	#{userEmail},
+	#{userPass}
 	);
 	</insert>
 	
@@ -26,6 +29,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM `srx_tb`.`backyard_user`
 	WHERE
 		`backyard_user`.`user_email` = #{userEmail};
+	</select>
+	
+	<select id="selectUser" resultType="list" resultMap="resultMap_backyard_user" parameterType="com.sanrenxing.vos.BackyardUser">
+	SELECT
+		`backyard_user`.`user_id`,
+		`backyard_user`.`user_email`,
+		`backyard_user`.`user_pass`
+		FROM `srx_tb`.`backyard_user`
+	WHERE
+		`backyard_user`.`user_email` = #{userEmail} and 
+		`backyard_user`.`user_pass` = #{userPass};
 	</select>
 	
 </mapper>

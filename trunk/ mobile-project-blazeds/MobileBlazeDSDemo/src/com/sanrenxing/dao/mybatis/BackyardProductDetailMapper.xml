@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanrenxing.dao.mybatis.BackyardProductDetailMapper">
+	<resultMap id="resultMap_backyard_product_detail" type="com.sanrenxing.vos.BackyardProductDetail" >
+		<result property="pushProductId"   column="push_product_id"  javaType="Integer"/>
+		<result property="productId"   column="product_id"  javaType="String"/>
+		<result property="saleType"   column="sale_type"  javaType="int"/>
+		<result property="saleTypeValue"   column="sale_type_value"  javaType="float"/>
+		<result property="activityStartDate"   column="activity_start_date"  javaType="Date"/>
+		<result property="activityEndDate"   column="activity_end_date"  javaType="Date"/>
+		<result property="pushStatus"   column="push_status"  javaType="Integer"/>
+		<result property="activityPublisher"   column="activity_publisher"  javaType="Integer"/>
+	</resultMap>
+	
+	<insert id="insertBackyardProductDetail" parameterType="com.sanrenxing.vos.BackyardProductDetail">
+	INSERT INTO `srx_tb`.`backyard_push_product_detail`
+	(`product_id`,
+	`sale_type`,
+	`sale_type_value`,
+	`activity_start_date`,
+	`activity_end_date`,
+	`activity_publisher`)
+	VALUES
+	(
+	#{productId},
+	#{saleType},
+	#{saleTypeValue},
+	#{activityStartDate},
+	#{activityEndDate},
+	#{activityPublisher}
+	);
+	</insert>
+	
+	<select id="selectDetailCountById" resultType="INTEGER" parameterType="String">
+	SELECT COUNT(`product_id`)
+	FROM `srx_tb`.`backyard_push_product_detail` 
+	WHERE
+	`backyard_push_product_detail`.`product_id` = #{productId};
+	</select>
+	
+	<select id="selectProductDetailById" resultType="List" resultMap="resultMap_backyard_product_detail" parameterType="String">
+	SELECT
+	`backyard_push_product_detail`.`product_id`,
+	`backyard_push_product_detail`.`shelves_date`,
+	`backyard_push_product_detail`.`sale_type`,
+	`backyard_push_product_detail`.`sale_type_value`,
+	`backyard_push_product_detail`.`activity_start_date`,
+	`backyard_push_product_detail`.`activity_end_date`,
+	`backyard_push_product_detail`.`push_status`,
+	`backyard_push_product_detail`.`activity_publisher`
+	FROM `srx_tb`.`backyard_push_product_detail`
+	WHERE
+	`backyard_push_product_detail`.`product_id` = #{productId};
+	</select>
+	
+</mapper>

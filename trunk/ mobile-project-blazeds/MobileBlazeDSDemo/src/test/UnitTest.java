@@ -1,5 +1,7 @@
 package test;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,9 +13,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import com.sanrenxing.dao.IBackyardProductDao;
 import com.sanrenxing.dao.IBackyardUserDao;
 import com.sanrenxing.dao.IUserAttentionDao;
 import com.sanrenxing.services.PushNotificationService;
+import com.sanrenxing.vos.BackyardProduct;
 import com.sanrenxing.vos.BackyardUser;
 import com.sanrenxing.vos.UserAttention;
 @RunWith(SpringJUnit4ClassRunner.class)//specify the test container
@@ -28,6 +32,8 @@ public class UnitTest {
 	private IUserAttentionDao<UserAttention> userAttentionDao;
 	@Autowired
 	private IBackyardUserDao<BackyardUser> backyardUserDao;
+	@Autowired
+	private IBackyardProductDao<BackyardProduct> backyardProductDao;
 	
 	@Test
 	public void pushNotification() {
@@ -43,6 +49,15 @@ public class UnitTest {
 	@Test
 	public void selectBackyardUser() {
 		List<BackyardUser> list = backyardUserDao.selectUserByName("aa");
+		System.out.println(list.size());
+	}
+	
+	@Test
+	public void selectProductByPage() {
+		Map<String, Integer> param=new HashMap<String, Integer>();
+        param.put("count", 1);  
+        param.put("page", 1);  
+		List<BackyardProduct> list = backyardProductDao.selectProductByPage(param);
 		System.out.println(list.size());
 	}
 	
