@@ -1,10 +1,19 @@
 package test;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javapns.Push;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleTrigger;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -59,6 +68,25 @@ public class UnitTest {
         param.put("page", 1);  
 		List<BackyardProduct> list = backyardProductDao.selectProductByPage(param);
 		System.out.println(list.size());
+	}
+	
+	@Test
+	public void quartzTest() {
+//		try {
+//			JobDetail jobDetail1 = new JobDetail("job1_1", "jGroup1",  
+//					SimpleJob.class);
+//			SimpleTrigger st = new SimpleTrigger("a", "a",new Date(System.currentTimeMillis()+10000));
+//			
+//			SchedulerFactory schedulerFactory = new StdSchedulerFactory();  
+//			
+//			Scheduler scheduler = schedulerFactory.getScheduler();  
+//			
+//			scheduler.scheduleJob(jobDetail1, st);
+//			scheduler.start();
+////			scheduler.triggerJob("job1_1", "jGroup1");
+//		} catch(SchedulerException e) {
+//			System.out.println(e);
+//		}
 	}
 	
 //	@Autowired

@@ -3,8 +3,8 @@ package com.sanrenxing.vos;
 public class UserAttention {
 	
 	private int attentionId;
-	private int userId;
-	private int productId;//淘宝中为item_id
+	private String userDeviceId;
+	private String productId;//淘宝中为item_id
 	private int currentLowestPrice;
 	private int attentionPrice;
 	
@@ -15,16 +15,17 @@ public class UserAttention {
 	public void setAttentionId(int attentionId) {
 		this.attentionId = attentionId;
 	}
-	public int getUserId() {
-		return userId;
+	
+	public String getUserDeviceId() {
+		return userDeviceId;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserDeviceId(String userDeviceId) {
+		this.userDeviceId = userDeviceId;
 	}
-	public int getProductId() {
+	public String getProductId() {
 		return productId;
 	}
-	public void setProductId(int productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 	public int getCurrentLowestPrice() {

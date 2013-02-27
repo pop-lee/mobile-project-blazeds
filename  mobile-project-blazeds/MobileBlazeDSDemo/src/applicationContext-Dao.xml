@@ -121,4 +121,8 @@
 		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.BackyardProductDetailMapper"></property>
 	</bean>
 	
+	<bean id="activityDao" parent="baseMapper">
+		<property name="mapperInterface" value="com.sanrenxing.dao.mybatis.ActivityMapper"></property>
+	</bean>
+	
 </beans>

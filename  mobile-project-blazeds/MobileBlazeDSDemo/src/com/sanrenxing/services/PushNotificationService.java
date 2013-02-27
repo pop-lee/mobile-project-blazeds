@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.sanrenxing.model.ModelData;
+import com.sanrenxing.vos.ActivityVO;
+import com.sanrenxing.vos.BackyardProduct;
+import com.sanrenxing.vos.UserAttention;
+
+import javapns.Push;
 import javapns.notification.AppleNotificationServer;
 import javapns.notification.AppleNotificationServerBasicImpl;
 import javapns.notification.PayloadPerDevice;
@@ -12,6 +18,7 @@ import javapns.notification.PushNotificationPayload;
 import javapns.notification.transmission.NotificationProgressListener;
 import javapns.notification.transmission.NotificationThread;
 import javapns.notification.transmission.NotificationThreads;
+import javapns.notification.transmission.PushQueue;
 
 @Service
 public class PushNotificationService extends BaseService {
@@ -70,6 +77,47 @@ public class PushNotificationService extends BaseService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void pushActivity(ActivityVO activity) {
+		
+	}
+	
+	public void pushProduct(BackyardProduct product,List<UserAttention> userList) {
+		ModelData model = ModelData.getInstance();
+		String keystore = model.getProperties().getProperty("pns.key");//"E:/downloads/devTools/IOS/aps_development_20130120.p12";//"D:/XXXXXXXX/XXX.p12";//证书路径和证书名
+		String password = model.getProperties().getProperty("pns.pass");//"2013";//"XXXXXXXX"; // 证书密码
+		boolean production = Integer.parseInt(model.getProperties().getProperty("pns.production"))==0?false:true; // 设置true为正式服务地址，false为开发者地址
+		try {
+//			AppleNotificationServer server = new AppleNotificationServerBasicImpl(keystore, password, production);
+//			List<PayloadPerDevice> list = new ArrayList<PayloadPerDevice>();
+			
+			int length = userList.size();
+			
+			PushNotificationPayload payload = new PushNotificationPayload();
+			payload.addAlert("推送内容");
+			payload.addSound("default");// 声音
+			//			payload.addBadge(1);//图标小红圈的数值
+			payload.addCustomDictionary("url","www.baidu.com");// 添加字典 
+			
+//			List<String> devices = new ArrayList<String>();
+			PushQueue pq = Push.queue(keystore, password, production, length);
+			for(int i=0;i<length;i++) {
+//				devices.add(userList.get(i).getUserDeviceId());
+				pq.add(payload, userList.get(i).getUserDeviceId());
+			}
+			pq.start();
+//			Push.payload(payload,keystore,password,production,length,devices);
+//			int threadThreads = length; // 线程数
+//			NotificationThreads work = new NotificationThreads(server,list,threadThreads);// 
+//			work.setListener(DEBUGGING_PROGRESS_LISTENER);// 对线程的监听，一定要加上这个监听
+//			work.start(); // 启动线程
+//			work.waitForAllThreads();// 等待所有线程启动完成
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	// 线程监听

@@ -5,8 +5,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.sanrenxing.dao.mybatis.UserAttentionMapper">
 	<resultMap id="resultMap_userAttention" type="com.sanrenxing.vos.UserAttention" >
 		<result property="attentionId"   column="attention_id"  javaType="int"/>
-		<result property="userId"  column="user_id"  javaType="int"/>
-		<result property="productId"  column="product_id"  javaType="int"/>
+		<result property="userDeviceId"  column="user_device_id"  javaType="String"/>
+		<result property="productId"  column="product_id"  javaType="String"/>
 		<result property="currentLowestPrice"  column="current_lowest_price"  javaType="int"/>
 		<result property="attentionPrice"  column="attention_price"  javaType="int"/>
 	</resultMap>
@@ -17,4 +17,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from 
 			User_Attention;
 	</select>
+	
+	<select id="selectListUserAttentionByProductId" resultType="list" resultMap="resultMap_userAttention" parameterType="String">
+	SELECT
+	`user_attention`.`attention_id`,
+	`user_attention`.`user_device_id`,
+	`user_attention`.`product_id`,
+	`user_attention`.`current_lowest_price`,
+	`user_attention`.`attention_price`
+	FROM `srx_tb`.`user_attention`
+	WHERE
+	`user_attention`.`product_id` = #{productId};
+	</select>
+	
 </mapper>

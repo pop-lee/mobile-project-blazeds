@@ -1,10 +1,12 @@
 package com.sanrenxing.services;
 
+import com.sanrenxing.dao.IActivityDao;
 import com.sanrenxing.dao.IBackyardProductDao;
 import com.sanrenxing.dao.IBackyardProductDetailDao;
 import com.sanrenxing.dao.IBackyardUserDao;
 import com.sanrenxing.dao.IUserAttentionDao;
 import com.sanrenxing.dao.IUserDao;
+import com.sanrenxing.vos.ActivityVO;
 import com.sanrenxing.vos.BackyardProduct;
 import com.sanrenxing.vos.BackyardProductDetail;
 import com.sanrenxing.vos.BackyardUser;
@@ -22,6 +24,8 @@ public class BaseService {
 	private IBackyardProductDao<BackyardProduct> backyardProductDao;
 	
 	private IBackyardProductDetailDao<BackyardProductDetail> backyardProductDetailDao;
+	
+	private IActivityDao<ActivityVO> activityDao;
 
 	public IUserAttentionDao<UserAttention> getUserAttentionDao() {
 		return userAttentionDao;
@@ -63,6 +67,14 @@ public class BaseService {
 	public void setBackyardProductDetailDao(
 			IBackyardProductDetailDao<BackyardProductDetail> backyardProductDetailDao) {
 		this.backyardProductDetailDao = backyardProductDetailDao;
+	}
+
+	public IActivityDao<ActivityVO> getActivityDao() {
+		return activityDao;
+	}
+
+	public void setActivityDao(IActivityDao<ActivityVO> activityDao) {
+		this.activityDao = activityDao;
 	}
 	
 }
