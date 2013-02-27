@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanrenxing.dao.mybatis.ActivityMapper">
+	<resultMap id="resultMap_activity" type="com.sanrenxing.vos.ActivityVO" >
+		<result property="acvitityName"   column="activity_name"  javaType="String"/>
+		<result property="activityForwardUrl"   column="activity_forward_url"  javaType="String"/>
+		<result property="activityImageUrl"   column="activity_image_url"  javaType="String"/>
+		<result property="activityPublisher"   column="activity_publisher"  javaType="Integer"/>
+	</resultMap>
+	
+	<insert id="insertActivity" parameterType="com.sanrenxing.vos.ActivityVO">
+	INSERT INTO `srx_tb`.`backyard_activity`
+	(`activity_name`,
+	`activity_forward_url`,
+	`activity_image_url`,
+	`activity_publisher`)
+	VALUES
+	(
+	#{acvitityName},
+	#{activityForwardUrl},
+	#{activityImageUrl},
+	#{activityPublisher}
+	);
+	</insert>
+	
+</mapper>

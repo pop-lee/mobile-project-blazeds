@@ -55,4 +55,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	`backyard_push_product_detail`.`product_id` = #{productId};
 	</select>
 	
+	<select id="selectEarlyActivity" resultType="Date">
+	SELECT
+	`backyard_push_product_detail`.`activity_start_date`
+	FROM
+	`srx_tb`.`backyard_push_product_detail`
+	WHERE `backyard_push_product_detail`.`push_status`!=1
+	ORDER BY 
+	`backyard_push_product_detail`.`activity_start_date`
+	LIMIT 1;
+	</select>
+	
+	<select id="selectProductDetailByDate" resultType="List" resultMap="resultMap_backyard_product_detail" parameterType="Date">
+	SELECT
+	`backyard_push_product_detail`.`push_product_detail_id`,
+	`backyard_push_product_detail`.`product_id`,
+	`backyard_push_product_detail`.`shelves_date`,
+	`backyard_push_product_detail`.`sale_type`,
+	`backyard_push_product_detail`.`sale_type_value`,
+	`backyard_push_product_detail`.`activity_start_date`,
+	`backyard_push_product_detail`.`activity_end_date`,
+	`backyard_push_product_detail`.`push_status`,
+	`backyard_push_product_detail`.`activity_publisher`
+	FROM `srx_tb`.`backyard_push_product_detail`
+	WHERE `backyard_push_product_detail`.`activity_start_date`=#{activityStartDate};
+	</select>
+	
 </mapper>

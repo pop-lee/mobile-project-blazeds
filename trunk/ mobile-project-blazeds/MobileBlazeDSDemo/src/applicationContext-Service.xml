@@ -21,7 +21,10 @@
 		<property name="backyardUserDao" ref="backyardUserDao" />
 		<property name="backyardProductDao" ref="backyardProductDao" />
 		<property name="backyardProductDetailDao" ref="backyardProductDetailDao" />
+		<property name="activityDao" ref="activityDao" />
 	</bean>
+	
+	<bean id="initService" class="com.sanrenxing.services.InitService" parent="baseService"/>
 	
 	<bean id="queryPriceService" class="com.sanrenxing.services.QueryPriceService" parent="baseService" />
 	<bean id="pushNotificationService" class="com.sanrenxing.services.PushNotificationService" parent="baseService" />
@@ -65,5 +68,37 @@
 		</property>
 	</bean>
 	
+	<!--  -->
+		<!--定时器任务配置（开始）-->	 
+	<!--配置JOB-->
+	<bean id="initJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="initService" />
+		<property name="targetMethod" value="execute" />
+<!-- 		<property name="arguments" /> -->
+	</bean>
+<!-- 	<bean name="initJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean"> -->
+<!--         <property name="jobClass" value="com.sanrenxing.services.InitJob" /> -->
+<!--     </bean> -->
+	<!--配置Trigger-->
+	<bean id="initTrigger"  
+	    class="org.springframework.scheduling.quartz.SimpleTriggerBean">  
+	    <property name="jobDetail" ref="initJobDetail" />  
+	    <property name="startDelay" value="1000" />
+	    <!-- 每1分钟执行一次 -->
+	    <property name="repeatInterval" value="0" />
+	    <property name="repeatCount" value="0" />
+	</bean>
+	<!--配置Scheduler-->
+	<bean id="schedulerFactory"  
+	    class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">  
+	    <property name="triggers">  
+	        <list>  
+	            <ref bean="initTrigger" />  
+	        </list>  
+	    </property>  
+	    <property name="autoStartup" value="true"/>
+	</bean>
+	<!--定时器任务配置（结束）-->
 	
 </beans>

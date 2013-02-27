@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.sanrenxing.enums.ResultCodeEnum;
 import com.sanrenxing.utils.ResultObject;
+import com.sanrenxing.vos.ActivityVO;
 import com.sanrenxing.vos.BackyardProduct;
 import com.sanrenxing.vos.BackyardProductDetail;
 import com.sanrenxing.vos.BackyardUser;
@@ -126,7 +127,8 @@ public class BackyardService extends BaseService {
 		return ro;
 	}
 	
-	public ResultObject addActivity() {
+	public ResultObject addActivity(ActivityVO activity) {
+		this.getActivityDao().insertActivity(activity);
 		
 		ResultObject ro = new ResultObject();
 		ro.setResultCode(ResultCodeEnum.SUCCESS_CODE);
