@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sanrenxing.enums.ResultCodeEnum;
@@ -16,6 +17,18 @@ import com.sanrenxing.vos.BackyardUser;
 @Service
 public class BackyardService extends BaseService {
 	
+	@Autowired
+	private PushNotificationService pushNotificationService;
+	
+	public PushNotificationService getPushNotificationService() {
+		return pushNotificationService;
+	}
+
+	public void setPushNotificationService(
+			PushNotificationService pushNotificationService) {
+		this.pushNotificationService = pushNotificationService;
+	}
+
 	public ResultObject insertUser(BackyardUser user)
 	{
 		ResultObject ro = new ResultObject();
@@ -80,6 +93,7 @@ public class BackyardService extends BaseService {
 			int len = product.getProductDetail().size();
 			for(int i=0;i<len;i++) {
 				this.getBackyardProductDetailDao().insertBackyardProductDetail(product.getProductDetail().get(i));
+				this.getPushNotificationService().addProductPush(product);
 				product.setPushCount(this.getBackyardProductDetailDao().selectDetailCountById(product.getProductId()));
 				this.getBackyardProductDao().updatePushCountById(product);
 			}
@@ -88,6 +102,7 @@ public class BackyardService extends BaseService {
 			for(int i=0;i<len;i++) {
 				this.getBackyardProductDao().insertBackyardProduct(product);
 				this.getBackyardProductDetailDao().insertBackyardProductDetail(product.getProductDetail().get(i));
+				this.getPushNotificationService().addProductPush(product);
 				product.setPushCount(this.getBackyardProductDetailDao().selectDetailCountById(product.getProductId()));
 				this.getBackyardProductDao().updatePushCountById(product);
 			}

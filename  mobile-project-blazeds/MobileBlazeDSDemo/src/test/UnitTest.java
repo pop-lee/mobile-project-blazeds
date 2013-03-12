@@ -46,7 +46,7 @@ public class UnitTest {
 	
 	@Test
 	public void pushNotification() {
-		pushNotificationService.pushNotification();
+//		pushNotificationService.pushNotification();
 	}
 	
 	@Test

@@ -4,6 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sanrenxing.dao.mybatis.BackyardProductDetailMapper">
 	<resultMap id="resultMap_backyard_product_detail" type="com.sanrenxing.vos.BackyardProductDetail" >
+		<result property="pushProductDetailId"   column="push_product_detail_id"  javaType="Integer"/>
 		<result property="pushProductId"   column="push_product_id"  javaType="Integer"/>
 		<result property="productId"   column="product_id"  javaType="String"/>
 		<result property="saleType"   column="sale_type"  javaType="int"/>
@@ -61,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM
 	`srx_tb`.`backyard_push_product_detail`
 	WHERE `backyard_push_product_detail`.`push_status`!=1
+	AND unix_timestamp(`backyard_push_product_detail`.`activity_start_date`)>unix_timestamp(NOW())
 	ORDER BY 
 	`backyard_push_product_detail`.`activity_start_date`
 	LIMIT 1;
@@ -80,5 +82,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM `srx_tb`.`backyard_push_product_detail`
 	WHERE `backyard_push_product_detail`.`activity_start_date`=#{activityStartDate};
 	</select>
+	
+	<update id="updateProductDetailPushStatus" parameterType="Integer">
+	UPDATE `srx_tb`.`backyard_push_product_detail`
+	SET
+	`push_status` = 1
+	WHERE `push_product_detail_id` = #{pushProductDetailId};
+	</update>
 	
 </mapper>

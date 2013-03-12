@@ -11,7 +11,8 @@
 		 http://www.springframework.org/schema/tx
 	 	 http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 		 http://www.springframework.org/schema/context
-		 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+		 http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+		 >
 
 	<!-- Service -->
 	
@@ -24,10 +25,18 @@
 		<property name="activityDao" ref="activityDao" />
 	</bean>
 	
-	<bean id="initService" class="com.sanrenxing.services.InitService" parent="baseService"/>
+	<bean id="initializedService" class="com.sanrenxing.services.InitializedService" >
+		<property name="pushNotificationJobDetail" ref="initPushNotificationJobDetailFactory" />
+	</bean>
+	<bean id="pushNotificationService" class="com.sanrenxing.services.PushNotificationService" parent="baseService" >
+		<property name="pushNotificationJobDetail" ref="pushNotificationJobDetailFactory" />
+	</bean>
+	
+	<bean id="initService" class="com.sanrenxing.services.InitService" parent="baseService" />
+	
+	<bean id="queryPushTimeService" class="com.sanrenxing.services.QueryPushTimeService" parent="baseService" />
 	
 	<bean id="queryPriceService" class="com.sanrenxing.services.QueryPriceService" parent="baseService" />
-	<bean id="pushNotificationService" class="com.sanrenxing.services.PushNotificationService" parent="baseService" />
 	<bean id="appService" class="com.sanrenxing.services.AppService" parent="baseService"/>
 	<bean id="backyardService" class="com.sanrenxing.services.BackyardService" parent="baseService"/>
 	
@@ -71,34 +80,50 @@
 	<!--  -->
 		<!--定时器任务配置（开始）-->	 
 	<!--配置JOB-->
-	<bean id="initJobDetail"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="initService" />
-		<property name="targetMethod" value="execute" />
+<!-- 	<bean id="initJobDetail" -->
+<!-- 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> -->
+<!-- 		<property name="targetObject" ref="initService" /> -->
+<!-- 		<property name="targetMethod" value="execute" /> -->
 <!-- 		<property name="arguments" /> -->
+<!-- 	</bean> -->
+	
+	<bean id="initPushNotificationJobDetailFactory" 
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pushNotificationService" />
+		<property name="targetMethod" value="queryEarlyToPush" />
+<!-- 		<property name="concurrent" value="false">   -->
+<!-- 		<property name="jobClass" value="com.sanrenxing.services.QueryPushTimeService" /> -->
 	</bean>
+	<bean id="pushNotificationJobDetailFactory" 
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pushNotificationService" />
+		<property name="targetMethod" value="trigerToPush" />
+<!-- 		<property name="concurrent" value="false">   -->
+<!-- 		<property name="jobClass" value="com.sanrenxing.services.QueryPushTimeService" /> -->
+	</bean>
+	
 <!-- 	<bean name="initJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean"> -->
-<!--         <property name="jobClass" value="com.sanrenxing.services.InitJob" /> -->
-<!--     </bean> -->
+<!--		 <property name="jobClass" value="com.sanrenxing.services.InitJob" /> -->
+<!--	 </bean> -->
 	<!--配置Trigger-->
-	<bean id="initTrigger"  
-	    class="org.springframework.scheduling.quartz.SimpleTriggerBean">  
-	    <property name="jobDetail" ref="initJobDetail" />  
-	    <property name="startDelay" value="1000" />
-	    <!-- 每1分钟执行一次 -->
-	    <property name="repeatInterval" value="0" />
-	    <property name="repeatCount" value="0" />
-	</bean>
+<!-- 	<bean id="initTrigger"   -->
+<!-- 		class="org.springframework.scheduling.quartz.SimpleTriggerBean">   -->
+<!-- 		<property name="jobDetail" ref="initJobDetail" />   -->
+<!-- 		<property name="startDelay" value="50000" /> -->
+<!-- 		<property name="repeatInterval" value="0" /> -->
+<!-- 		<property name="repeatCount" value="0" /> -->
+<!-- 	</bean> -->
 	<!--配置Scheduler-->
-	<bean id="schedulerFactory"  
-	    class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">  
-	    <property name="triggers">  
-	        <list>  
-	            <ref bean="initTrigger" />  
-	        </list>  
-	    </property>  
-	    <property name="autoStartup" value="true"/>
-	</bean>
+<!-- 	<bean id="schedulerFactory"   -->
+<!-- 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">   -->
+<!-- 		<property name="triggers">   -->
+<!-- 			<list>   -->
+<!-- 				<ref bean="initTrigger" />   -->
+<!-- 			</list>   -->
+<!-- 		</property>   -->
+<!-- 		<property name="autoStartup" value="true"/> -->
+<!-- 	</bean> -->
+	
 	<!--定时器任务配置（结束）-->
 	
 </beans>
