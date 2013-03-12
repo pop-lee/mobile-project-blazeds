@@ -1,144 +1,156 @@
 package com.sanrenxing.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleTrigger;
+import org.quartz.impl.StdSchedulerFactory;
 
 import com.sanrenxing.model.ModelData;
-import com.sanrenxing.vos.ActivityVO;
 import com.sanrenxing.vos.BackyardProduct;
+import com.sanrenxing.vos.BackyardProductDetail;
 import com.sanrenxing.vos.UserAttention;
 
-import javapns.Push;
-import javapns.notification.AppleNotificationServer;
-import javapns.notification.AppleNotificationServerBasicImpl;
-import javapns.notification.PayloadPerDevice;
-import javapns.notification.PushNotificationPayload;
-import javapns.notification.transmission.NotificationProgressListener;
-import javapns.notification.transmission.NotificationThread;
-import javapns.notification.transmission.NotificationThreads;
-import javapns.notification.transmission.PushQueue;
-
-@Service
 public class PushNotificationService extends BaseService {
 	
-	public void pushNotification1() {
-		String keystore = "E:/downloads/devTools/IOS/aps_development_20130120.p12";//"D:/XXXXXXXX/XXX.p12";//证书路径和证书名
-		String password = "2013";//"XXXXXXXX"; // 证书密码
-		String token = "F380883BE1563E6A5A8ED27CEC2623E75F4C1113010206DDFF1BF2EB5D172CAE";//"XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX";// 手机唯一标识
-		boolean production = false; // 设置true为正式服务地址，false为开发者地址
-		int threadThreads = 10; // 线程数
+	private ModelData _model = ModelData.getInstance();
+	
+	private JobDetail pushNotificationJobDetail;
+	
+	
+	public JobDetail getPushNotificationJobDetail() {
+		return pushNotificationJobDetail;
+	}
+
+	public void setPushNotificationJobDetail(JobDetail pushNotificationJobDetail) {
+		this.pushNotificationJobDetail = pushNotificationJobDetail;
+	}
+
+	public void queryEarlyToPush() {
 		try {
-			// 建立与Apple服务器连接
-			AppleNotificationServer server = new AppleNotificationServerBasicImpl(keystore, password, production);
-			List<PayloadPerDevice> list = new ArrayList<PayloadPerDevice>();
-			PushNotificationPayload payload = new PushNotificationPayload();
-			payload.addAlert("推送内容");
-			payload.addSound("default");// 声音
-//			payload.addBadge(1);//图标小红圈的数值
-			payload.addCustomDictionary("url","www.baidu.com");// 添加字典 
-			PayloadPerDevice pay = new PayloadPerDevice(payload,token);// 将要推送的消息和手机唯一标识绑定
-			list.add(pay);
-
-			NotificationThreads work = new NotificationThreads(server,list,threadThreads);// 
-			work.setListener(DEBUGGING_PROGRESS_LISTENER);// 对线程的监听，一定要加上这个监听
-			work.start(); // 启动线程
-			work.waitForAllThreads();// 等待所有线程启动完成
-
-		} catch (Exception e) {
-			e.printStackTrace();
+			if(_model.getPushScheduler()!=null) return; //如果当前有在计划内的任务，则跳过此方法
+			
+			ModelData _model = ModelData.getInstance();
+			
+			_model.setEarlyActivityDate(
+					this.getBackyardProductDetailDao().selectEarlyActivity());
+			
+			if(_model.getEarlyActivityDate()==null) return;
+			
+			long curTime = System.currentTimeMillis();
+			long earlyTime = _model.getEarlyActivityDate().getTime();
+			
+			if(earlyTime<curTime+60000
+				&& earlyTime>curTime-300000
+					) {
+				pushProductByDate(_model.getEarlyActivityDate());
+			} else if(earlyTime>curTime+60000) {
+				//将在未来一段时间内执行
+				pushNotificationJobDetail.setName("PushNotificationJobDetail"+new Date(earlyTime));
+				
+				SchedulerFactory schedulerFactory = new StdSchedulerFactory();  
+				Scheduler pushNotificationScheduler = schedulerFactory.getScheduler();
+			
+				// 实例化SimpleTrigger  
+				SimpleTrigger pushNotificationTrigger = new SimpleTrigger();
+				// 这些值的设置也可以从外面传入，这里采用默放值  
+				pushNotificationTrigger.setJobName(pushNotificationJobDetail.getName());  
+				pushNotificationTrigger.setJobGroup(Scheduler.DEFAULT_GROUP);
+				pushNotificationTrigger.setStartTime(new Date(earlyTime));
+				// 设置名称  
+				pushNotificationTrigger.setName("PushNotificationTriger"+new Date(earlyTime));
+			
+				pushNotificationScheduler.scheduleJob(pushNotificationJobDetail, pushNotificationTrigger);
+				
+				_model.setPushScheduler(pushNotificationScheduler);
+				_model.setPushJobDetail(pushNotificationJobDetail);
+				_model.setPushSimpleTrigger(pushNotificationTrigger);
+				
+//				pushNotificationScheduler.start();
+			}
+		} catch(Exception e) {
+			System.out.println(e);
 		}
 	}
 	
-	public void pushNotification() {
-		String keystore = "E:/downloads/devTools/IOS/aps_development_20130120.p12";//"D:/XXXXXXXX/XXX.p12";//证书路径和证书名
-		String password = "2013";//"XXXXXXXX"; // 证书密码
-		String token = "F380883BE1563E6A5A8ED27CEC2623E75F4C1113010206DDFF1BF2EB5D172CAE";//"XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX XXXXXX";// 手机唯一标识
-		boolean production = false; // 设置true为正式服务地址，false为开发者地址
-		int threadThreads = 10; // 线程数
-		try {
-			// 建立与Apple服务器连接
-			AppleNotificationServer server = new AppleNotificationServerBasicImpl(keystore, password, production);
-			List<PayloadPerDevice> list = new ArrayList<PayloadPerDevice>();
-			PushNotificationPayload payload = new PushNotificationPayload();
-			payload.addAlert("推送内容");
-			payload.addSound("default");// 声音
-//			payload.addBadge(1);//图标小红圈的数值
-			payload.addCustomDictionary("url","www.baidu.com");// 添加字典 
-			PayloadPerDevice pay = new PayloadPerDevice(payload,token);// 将要推送的消息和手机唯一标识绑定
-			list.add(pay);
-
-			NotificationThreads work = new NotificationThreads(server,list,threadThreads);// 
-			work.setListener(DEBUGGING_PROGRESS_LISTENER);// 对线程的监听，一定要加上这个监听
-			work.start(); // 启动线程
-			work.waitForAllThreads();// 等待所有线程启动完成
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void pushActivity(ActivityVO activity) {
+	public void trigerToPush() {
+		Date currentTrigerDate = _model.getPushSimpleTrigger().getStartTime();
 		
+		_model.setPushScheduler(null);
+		pushProductByDate(currentTrigerDate);
 	}
 	
-	public void pushProduct(BackyardProduct product,List<UserAttention> userList) {
-		ModelData model = ModelData.getInstance();
-		String keystore = model.getProperties().getProperty("pns.key");//"E:/downloads/devTools/IOS/aps_development_20130120.p12";//"D:/XXXXXXXX/XXX.p12";//证书路径和证书名
-		String password = model.getProperties().getProperty("pns.pass");//"2013";//"XXXXXXXX"; // 证书密码
-		boolean production = Integer.parseInt(model.getProperties().getProperty("pns.production"))==0?false:true; // 设置true为正式服务地址，false为开发者地址
+	public void addProductPush(BackyardProduct product) {
+		
+		long pushStartTime = product.getProductDetail().get(0).getActivityStartDate().getTime();
+		long curTime = System.currentTimeMillis();
 		try {
-//			AppleNotificationServer server = new AppleNotificationServerBasicImpl(keystore, password, production);
-//			List<PayloadPerDevice> list = new ArrayList<PayloadPerDevice>();
-			
-			int length = userList.size();
-			
-			PushNotificationPayload payload = new PushNotificationPayload();
-			payload.addAlert("推送内容");
-			payload.addSound("default");// 声音
-			//			payload.addBadge(1);//图标小红圈的数值
-			payload.addCustomDictionary("url","www.baidu.com");// 添加字典 
-			
-//			List<String> devices = new ArrayList<String>();
-			PushQueue pq = Push.queue(keystore, password, production, length);
-			for(int i=0;i<length;i++) {
-//				devices.add(userList.get(i).getUserDeviceId());
-				pq.add(payload, userList.get(i).getUserDeviceId());
+			if(pushStartTime<curTime+60000
+					&& pushStartTime>curTime-300000
+						) {
+				pushProductByDate(new Date(pushStartTime));
+			} else if(pushStartTime>curTime+60000) {
+				if(_model.getEarlyActivityDate()==null||pushStartTime<_model.getEarlyActivityDate().getTime()) { //如果新增加的商品推送时间小于当前保存的最早时间，则执行按新的最早时间推送
+					_model.setEarlyActivityDate(new Date(pushStartTime));
+					long earlyTime = _model.getEarlyActivityDate().getTime();
+					
+					if(_model.getPushScheduler()!=null) {
+						_model.getPushScheduler().deleteJob(_model.getPushSimpleTrigger().getJobName(), _model.getPushSimpleTrigger().getGroup());
+					}
+					
+					pushNotificationJobDetail.setName("PushNotificationJobDetail"+new Date(earlyTime));
+					
+					SchedulerFactory schedulerFactory = new StdSchedulerFactory();  
+					Scheduler pushNotificationScheduler = schedulerFactory.getScheduler();
+				
+					// 实例化SimpleTrigger  
+					SimpleTrigger pushNotificationTrigger = new SimpleTrigger();
+					// 这些值的设置也可以从外面传入，这里采用默放值  
+					pushNotificationTrigger.setJobName(pushNotificationJobDetail.getName());  
+					pushNotificationTrigger.setJobGroup(Scheduler.DEFAULT_GROUP);
+					pushNotificationTrigger.setStartTime(new Date(earlyTime));
+					// 设置名称  
+					pushNotificationTrigger.setName("PushNotificationTriger"+new Date(earlyTime));
+				
+					pushNotificationScheduler.scheduleJob(pushNotificationJobDetail, pushNotificationTrigger);
+					
+					_model.setPushScheduler(pushNotificationScheduler);
+					_model.setPushJobDetail(pushNotificationJobDetail);
+					_model.setPushSimpleTrigger(pushNotificationTrigger);
+				}
 			}
-			pq.start();
-//			Push.payload(payload,keystore,password,production,length,devices);
-//			int threadThreads = length; // 线程数
-//			NotificationThreads work = new NotificationThreads(server,list,threadThreads);// 
-//			work.setListener(DEBUGGING_PROGRESS_LISTENER);// 对线程的监听，一定要加上这个监听
-//			work.start(); // 启动线程
-//			work.waitForAllThreads();// 等待所有线程启动完成
-			
-		} catch (Exception e) {
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
-	// 线程监听
-	public static final NotificationProgressListener DEBUGGING_PROGRESS_LISTENER = new NotificationProgressListener() {
-			public void eventThreadStarted(NotificationThread notificationThread) {
-				System.out.println("   [EVENT]: thread #" + notificationThread.getThreadNumber() + " started with " + " devices beginning at message id #" + notificationThread.getFirstMessageIdentifier());
-			}
-			public void eventThreadFinished(NotificationThread thread) {
-				System.out.println("   [EVENT]: thread #" + thread.getThreadNumber() + " finished: pushed messages #" + thread.getFirstMessageIdentifier() + " to " + thread.getLastMessageIdentifier() + " toward "+ " devices");
-			}
-			public void eventConnectionRestarted(NotificationThread thread) {
-				System.out.println("   [EVENT]: connection restarted in thread #" + thread.getThreadNumber() + " because it reached " + thread.getMaxNotificationsPerConnection() + " notifications per connection");
-			}
-			public void eventAllThreadsStarted(NotificationThreads notificationThreads) {
-				System.out.println("   [EVENT]: all threads started: " + notificationThreads.getThreads().size());
-			}
-			public void eventAllThreadsFinished(NotificationThreads notificationThreads) {
-				System.out.println("   [EVENT]: all threads finished: " + notificationThreads.getThreads().size());
-			}
-			public void eventCriticalException(NotificationThread notificationThread, Exception exception) {
-				System.out.println("   [EVENT]: critical exception occurred: " + exception);
-			}
-		 };
+	private void pushProductByDate(Date pushDate) {
+		//查询在指定时间范围内，立即执行
+		List<BackyardProductDetail> list = 
+				this.getBackyardProductDetailDao().selectProductDetailByDate(pushDate);
+		
+		int productLength = list.size();
+		for(int i=0;i<productLength;i++) {
+			PushNotificationUtil service = new PushNotificationUtil();
+			BackyardProductDetail productDetail = list.get(i);
+			BackyardProduct product = this.getBackyardProductDao().selectProductById(productDetail.getProductId()).get(0);
+			List<BackyardProductDetail> pl = new ArrayList<BackyardProductDetail>();
+			pl.add(list.get(i));
+			List<UserAttention> userList = this.getUserAttentionDao().selectListUserAttentionByProductId(productDetail.getProductId());
+			product.setProductDetail(pl);
+			
+			service.pushProduct(product, userList);
+			
+			this.getBackyardProductDetailDao().updateProductDetailPushStatus(productDetail.getPushProductDetailId());
+		}
+		queryEarlyToPush();
+		
+		System.out.println(list);
+	}
 }

@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	`backyard_push_product`.`product_id`,
 	`backyard_push_product`.`product_name`,
 	`backyard_push_product`.`product_original_price`,
-	`backyard_push_product`.`shelves_date`
+	`backyard_push_product`.`shelves_date`,
 	`backyard_push_product`.`push_count`
 	FROM `srx_tb`.`backyard_push_product`;
 	</select>

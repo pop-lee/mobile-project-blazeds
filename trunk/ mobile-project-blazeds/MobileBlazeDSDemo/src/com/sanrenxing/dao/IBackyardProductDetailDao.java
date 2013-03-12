@@ -14,4 +14,6 @@ public interface IBackyardProductDetailDao<T> {
 	public Date selectEarlyActivity();
 	
 	public List<T> selectProductDetailByDate(Date pushDate);
+	
+	public void updateProductDetailPushStatus(int pushProductDetailId);
 }

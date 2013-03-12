@@ -3,11 +3,21 @@ package com.sanrenxing.model;
 import java.util.Date;
 import java.util.Properties;
 
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SimpleTrigger;
+
 public class ModelData {
 
 	private static ModelData uniqueInstance = null;
 	
 	private Date earlyActivityDate;
+	
+	private Scheduler pushScheduler;
+	
+	private JobDetail pushJobDetail;
+	
+	private SimpleTrigger pushSimpleTrigger;
 	
 	private Properties properties = new Properties();
 	 
@@ -37,5 +47,29 @@ public class ModelData {
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-    
+
+	public Scheduler getPushScheduler() {
+		return pushScheduler;
+	}
+
+	public void setPushScheduler(Scheduler pushScheduler) {
+		this.pushScheduler = pushScheduler;
+	}
+
+	public JobDetail getPushJobDetail() {
+		return pushJobDetail;
+	}
+
+	public void setPushJobDetail(JobDetail pushJobDetail) {
+		this.pushJobDetail = pushJobDetail;
+	}
+
+	public SimpleTrigger getPushSimpleTrigger() {
+		return pushSimpleTrigger;
+	}
+
+	public void setPushSimpleTrigger(SimpleTrigger pushSimpleTrigger) {
+		this.pushSimpleTrigger = pushSimpleTrigger;
+	}
+	
 }

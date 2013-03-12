@@ -10,9 +10,9 @@ import java.util.List;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
-import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.scheduling.quartz.SimpleTriggerBean;
+import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 
 import com.sanrenxing.model.ModelData;
 import com.sanrenxing.vos.BackyardProduct;
@@ -21,9 +21,6 @@ import com.sanrenxing.vos.UserAttention;
 
 public class InitService extends BaseService {
 
-	final String PUSH_JOB_BY_TIME = "push_job_by_time";
-	final String PUSH_JOB_GROUP = "push_job_group";
-	
 //	@Override
 //	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 //		// TODO Auto-generated method stub
@@ -34,10 +31,10 @@ public class InitService extends BaseService {
 	
 	public void execute() throws JobExecutionException {
 		// TODO Auto-generated method stub
-		initProperties();
-		initPushTimeListener();
+//		initProperties();
+//		initPushTimeListener();
 	}
-	
+
 	private void initPushTimeListener() {
 		try {
 			ModelData earlyActivityDate = ModelData.getInstance();
@@ -58,7 +55,7 @@ public class InitService extends BaseService {
 				
 				int productLength = list.size();
 				for(int i=0;i<productLength;i++) {
-					PushNotificationService service = new PushNotificationService();
+					PushNotificationUtil service = new PushNotificationUtil();
 					BackyardProductDetail productDetail = list.get(i);
 					BackyardProduct product = this.getBackyardProductDao().selectProductById(productDetail.getProductId()).get(0);
 					List<BackyardProductDetail> pl = new ArrayList<BackyardProductDetail>();
@@ -72,6 +69,8 @@ public class InitService extends BaseService {
 				System.out.println(list);
 			} else if(selTime>curTime+60000) {
 				//将在未来一段时间内执行
+				
+				
 //				JobDetail jobDetail1 = new JobDetail(PUSH_JOB_BY_TIME, PUSH_JOB_GROUP,  
 //						SimpleJob.class);
 //				SimpleTrigger st = new SimpleTrigger("a", "a",new Date(System.currentTimeMillis()+10000));
