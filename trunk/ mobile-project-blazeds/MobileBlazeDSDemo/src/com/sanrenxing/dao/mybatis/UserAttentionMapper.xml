@@ -30,4 +30,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	`user_attention`.`product_id` = #{productId};
 	</select>
 	
+	<select id="selectUnreadStatusCountByUserDeviceId" resultType="INTEGER" parameterType="String">
+	SELECT COUNT(
+	`user_attention`.`attention_status` )
+	FROM `srx_tb`.`user_attention`
+	WHERE
+	`user_attention`.`user_device_id` = #{userDeviceId}
+	AND `user_attention`.`attention_status` = 0;
+	</select>
+	
+	<update id="updateUnreadStatusByAttentionId" parameterType="INTEGER" >
+	UPDATE `srx_tb`.`user_attention`
+	SET
+	`attention_status` = 0
+	WHERE `attention_id`= #{attentionId};
+	</update>
+	
 </mapper>

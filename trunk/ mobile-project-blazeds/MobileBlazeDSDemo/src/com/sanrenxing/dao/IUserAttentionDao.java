@@ -9,4 +9,8 @@ public interface IUserAttentionDao<T> {
 	public List<T> selectListUserAttention();
 	
 	public List<T> selectListUserAttentionByProductId(String productId);
+	
+	public int selectUnreadStatusCountByUserDeviceId(String userDeviceId);
+	
+	public void updateUnreadStatusByAttentionId(int attentionId);
 }

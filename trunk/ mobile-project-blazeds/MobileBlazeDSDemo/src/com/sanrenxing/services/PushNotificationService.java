@@ -88,10 +88,11 @@ public class PushNotificationService extends BaseService {
 	public void addProductPush(BackyardProduct product) {
 		
 		long pushStartTime = product.getProductDetail().get(0).getActivityStartDate().getTime();
+		long pushEndTime = product.getProductDetail().get(0).getActivityEndDate().getTime();
 		long curTime = System.currentTimeMillis();
 		try {
 			if(pushStartTime<curTime+60000
-					&& pushStartTime>curTime-300000
+					&& pushEndTime>curTime
 						) {
 				pushProductByDate(new Date(pushStartTime));
 			} else if(pushStartTime>curTime+60000) {
@@ -143,6 +144,13 @@ public class PushNotificationService extends BaseService {
 			List<BackyardProductDetail> pl = new ArrayList<BackyardProductDetail>();
 			pl.add(list.get(i));
 			List<UserAttention> userList = this.getUserAttentionDao().selectListUserAttentionByProductId(productDetail.getProductId());
+			int length = userList.size();
+			for(int j=0;j<length;j++) {
+				this.getUserAttentionDao().updateUnreadStatusByAttentionId(userList.get(j).getAttentionId());
+				userList.get(j).setAttentionStatusUnreadCount(
+						this.getUserAttentionDao().selectUnreadStatusCountByUserDeviceId(
+								userList.get(j).getUserDeviceId()));
+			}
 			product.setProductDetail(pl);
 			
 			service.pushProduct(product, userList);

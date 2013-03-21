@@ -7,7 +7,9 @@ public class UserAttention {
 	private String productId;//淘宝中为item_id
 	private int currentLowestPrice;
 	private int attentionPrice;
+	private int attentionStatus;
 	
+	private int attentionStatusUnreadCount;
 	
 	public int getAttentionId() {
 		return attentionId;
@@ -40,6 +42,17 @@ public class UserAttention {
 	public void setAttentionPrice(int attentionPrice) {
 		this.attentionPrice = attentionPrice;
 	}
-	
+	public int getAttentionStatus() {
+		return attentionStatus;
+	}
+	public void setAttentionStatus(int attentionStatus) {
+		this.attentionStatus = attentionStatus;
+	}
+	public int getAttentionStatusUnreadCount() {
+		return attentionStatusUnreadCount;
+	}
+	public void setAttentionStatusUnreadCount(int attentionStatusUnreadCount) {
+		this.attentionStatusUnreadCount = attentionStatusUnreadCount;
+	}
 	
 }
