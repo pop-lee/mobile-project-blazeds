@@ -80,7 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	`backyard_push_product_detail`.`push_status`,
 	`backyard_push_product_detail`.`activity_publisher`
 	FROM `srx_tb`.`backyard_push_product_detail`
-	WHERE `backyard_push_product_detail`.`activity_start_date`=#{activityStartDate};
+	WHERE `backyard_push_product_detail`.`activity_start_date`=#{activityStartDate}
+	AND`backyard_push_product_detail`.`push_status`!=1;
 	</select>
 	
 	<update id="updateProductDetailPushStatus" parameterType="Integer">

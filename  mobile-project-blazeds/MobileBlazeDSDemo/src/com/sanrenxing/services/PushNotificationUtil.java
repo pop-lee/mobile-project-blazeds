@@ -95,15 +95,15 @@ public class PushNotificationUtil {
 			int length = userList.size();
 			
 			PushNotificationPayload payload = new PushNotificationPayload();
-			payload.addAlert("推送内容");
+			payload.addAlert("您关注的商品" + product.getProductName() + "现在有优惠活动咯！");
 			payload.addSound("default");// 声音
-			//			payload.addBadge(1);//图标小红圈的数值
 			payload.addCustomDictionary("url","www.baidu.com");// 添加字典 
 			
 //			List<String> devices = new ArrayList<String>();
 			PushQueue pq = Push.queue(keystore, password, production, length);
 			for(int i=0;i<length;i++) {
 //				devices.add(userList.get(i).getUserDeviceId());
+				payload.addBadge(userList.get(i).getAttentionStatusUnreadCount());//图标小红圈的数值
 				pq.add(payload, userList.get(i).getUserDeviceId());
 			}
 			pq.start();
