@@ -11,6 +11,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="attentionPrice"  column="attention_price"  javaType="int"/>
 	</resultMap>
 	
+	<insert id="insertUserAttention" parameterType="com.sanrenxing.vos.User">
+		INSERT INTO `srx_tb`.`user_attention`
+		(`user_device_id`,
+		`product_id`,
+		`current_lowest_price`,
+		`attention_price`)
+		SELECT
+		#{userDeviceId},
+		#{productId},
+		#{currentLowestPrice},
+		#{attentionPrice}
+		FROM DUAL
+		WHERE NOT EXISTS(
+		SELECT `user_device_id`,`product_id` FROM `srx_tb`.`user_attention` 
+		WHERE `user_device_id`=#{userDeviceId} AND `product_id`=#{productId})
+	</insert>
+	
 	<select id="selectListUserAttention" resultType="list" resultMap="resultMap_userAttention">
 		select distinct
 			product_id

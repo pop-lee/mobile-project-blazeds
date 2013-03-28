@@ -13,4 +13,6 @@ public interface IUserAttentionDao<T> {
 	public int selectUnreadStatusCountByUserDeviceId(String userDeviceId);
 	
 	public void updateUnreadStatusByAttentionId(int attentionId);
+	
+	public void insertUserAttention(T userAttention);
 }
