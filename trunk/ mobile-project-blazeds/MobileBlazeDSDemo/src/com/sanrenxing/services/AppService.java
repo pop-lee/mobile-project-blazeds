@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.sanrenxing.enums.ResultCodeEnum;
 import com.sanrenxing.utils.ResultObject;
 import com.sanrenxing.vos.User;
+import com.sanrenxing.vos.UserAttention;
 
 @Service
 public class AppService extends BaseService {
@@ -20,7 +21,7 @@ public class AppService extends BaseService {
 		this.getUserDao().insertUser(user);
 		
 		ResultObject ro = new ResultObject();
-		ro.setResultData(ResultCodeEnum.SUCCESS_CODE);
+		ro.setResultCode(ResultCodeEnum.SUCCESS_CODE);
 		return ro;
 	}
 	
@@ -31,8 +32,14 @@ public class AppService extends BaseService {
 	 * @return 返回ResultObject
 	 */
 	public ResultObject addUserAttention(String userId,String productId) {
+		UserAttention userAttention = new UserAttention();
+		userAttention.setUserDeviceId(userId);
+		userAttention.setProductId(productId);
+		this.getUserAttentionDao().insertUserAttention(userAttention);
+		
 		ResultObject ro = new ResultObject();
-		ro.setResultData(ResultCodeEnum.SUCCESS_CODE);
+		ro.setResultCode(ResultCodeEnum.SUCCESS_CODE);
+		ro.setResultData(productId);
 		return ro;
 	}
 }
